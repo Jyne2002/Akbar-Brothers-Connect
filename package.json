@@ -1,5 +1,11 @@
 {
+  "name": "akbar-brothers-connect",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd backend && npm install && cd ../frontend && npm install && npm run build",
+    "start": "cd backend && npm install && node index.js"
+  },
   "dependencies": {
-    "mongodb": "^7.2.0"
+    "mongodb": "^7.0.0"
   }
 }
