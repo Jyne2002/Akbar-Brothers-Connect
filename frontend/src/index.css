@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-tea-green: #dcedc8;
+  --color-tea-dark: #33691e;
+  --color-earth-brown: #5d4037;
+  --color-cream-white: #fcfbf8;
+  --color-beige: #f5f5dc;
+  --color-brand-red: #b41f31;
+  --color-brand-red-dark: #8e1424;
+  --color-brand-red-soft: #fbe7ea;
+  --color-brand-ink: #151515;
+}
+
+body {
+  background-color: var(--color-cream-white);
+  color: var(--color-brand-ink);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.font-poppins {
+  font-family: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.auth-morph-shell {
+  view-transition-name: auth-shell;
+}
+
+.auth-green-panel {
+  view-transition-name: auth-green-panel;
+}
+
+.auth-white-panel {
+  view-transition-name: auth-white-panel;
+}
+
+@supports (view-transition-name: none) {
+  ::view-transition-group(auth-shell),
+  ::view-transition-group(auth-green-panel),
+  ::view-transition-group(auth-white-panel) {
+    animation-duration: 560ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::view-transition-old(auth-shell),
+  ::view-transition-new(auth-shell),
+  ::view-transition-old(auth-green-panel),
+  ::view-transition-new(auth-green-panel),
+  ::view-transition-old(auth-white-panel),
+  ::view-transition-new(auth-white-panel) {
+    animation-duration: 560ms;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
