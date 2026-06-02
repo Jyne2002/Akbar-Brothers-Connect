@@ -23,7 +23,7 @@ import { getStoredUser } from '../utils/auth';
 import { buildPublicProfileUrl } from '../utils/profileCard';
 
 const inputClassName =
-  'w-full rounded-2xl border border-black/10 bg-[#f4f4f4] px-4 py-3 text-sm text-black outline-none transition focus:border-black/20 focus:ring-4 focus:ring-black/8';
+  'theme-field w-full rounded-2xl border border-black/10 bg-[#f4f4f4] px-4 py-3 text-sm text-black outline-none transition focus:border-black/20 focus:ring-4 focus:ring-black/8';
 const activeFilterButtonClassName =
   'border border-[var(--color-brand-red)] bg-[var(--color-brand-red)] text-white shadow-[0_14px_28px_rgba(142,20,36,0.18)]';
 const primaryButtonClassName =
@@ -31,7 +31,7 @@ const primaryButtonClassName =
 const compactPrimaryButtonClassName =
   'inline-flex items-center justify-center gap-2 rounded-full border border-[var(--color-brand-red)] bg-[var(--color-brand-red)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-red-dark)]';
 const slimInputClassName =
-  'w-full min-h-10 rounded-xl border border-black/10 bg-[#f4f4f4] px-4 py-2 text-sm text-black outline-none transition focus:border-black/20 focus:ring-4 focus:ring-black/8';
+  'theme-field w-full min-h-10 rounded-xl border border-black/10 bg-[#f4f4f4] px-4 py-2 text-sm text-black outline-none transition focus:border-black/20 focus:ring-4 focus:ring-black/8';
 const slimPrimaryButtonClassName =
   'inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-[var(--color-brand-red)] bg-[var(--color-brand-red)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-red-dark)]';
 const disabledPrimaryButtonClassName =

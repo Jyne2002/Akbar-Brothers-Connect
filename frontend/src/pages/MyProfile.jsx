@@ -3,13 +3,13 @@ import { Link, useParams } from 'react-router-dom';
 import { Building2, Camera, Loader2, Save, Share2, SquarePen } from 'lucide-react';
 import ProfileImageEditorModal from '../components/ProfileImageEditorModal';
 import ProfileSocialButtons from '../components/ProfileSocialButtons';
-import { COMPANIES, getCompanyByValue } from '../constants/companies';
+import { COMPANIES, getCompanyByValue, getCompanyLandlineNumber } from '../constants/companies';
 import api from '../utils/api';
 import { getStoredUser, hasFreshStoredUser, setStoredUser } from '../utils/auth';
 import { buildPublicProfilePath } from '../utils/profileCard';
 
 const inputClassName =
-  'mt-1.5 w-full rounded-2xl border border-black/10 bg-[#f4f4f4] px-4 py-2.5 text-sm text-black outline-none transition focus:border-black/20 focus:ring-4 focus:ring-black/8 disabled:cursor-default disabled:bg-[#efefef] disabled:text-black/70';
+  'theme-field mt-1.5 w-full rounded-2xl border border-black/10 bg-[#f4f4f4] px-4 py-2.5 text-sm text-black outline-none transition focus:border-black/20 focus:ring-4 focus:ring-black/8 read-only:cursor-default disabled:cursor-default disabled:bg-[#efefef] disabled:text-black/70';
 const primaryButtonClassName =
   'inline-flex items-center gap-2 rounded-full border border-[var(--color-brand-red)] bg-[var(--color-brand-red)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-red-dark)]';
 const compactPrimaryButtonClassName =
@@ -20,7 +20,7 @@ const EXTENSION_NUMBER_MAX_LENGTH = 6;
 const isValidEmailAddress = (value) => String(value || '').trim().includes('@');
 const getPhoneNumberError = (value) =>
   value && value.length !== PHONE_NUMBER_LENGTH
-    ? `Phone number must be exactly ${PHONE_NUMBER_LENGTH} digits`
+    ? `Landline number must be exactly ${PHONE_NUMBER_LENGTH} digits`
     : '';
 const getMobileNumberError = (value) =>
   value && value.length !== PHONE_NUMBER_LENGTH
@@ -79,6 +79,19 @@ const hydrateCachedProfile = (user) => ({
   profileCompleted: Boolean(user?.profileCompleted),
 });
 
+const applyCompanyLandlineToProfile = (user) => {
+  const companyLandlineNumber = getCompanyLandlineNumber(user?.company);
+
+  if (!companyLandlineNumber) {
+    return user;
+  }
+
+  return {
+    ...user,
+    phoneNumber: companyLandlineNumber,
+  };
+};
+
 const MyProfile = () => {
   const { userId } = useParams();
   const storedUserRef = useRef(getStoredUser());
@@ -86,7 +99,10 @@ const MyProfile = () => {
   const isViewingManagedProfile = Boolean(userId);
   const isOwnProfile = !isViewingManagedProfile;
   const cachedOwnProfile = useMemo(
-    () => (isOwnProfile && userInfo ? hydrateCachedProfile(userInfo) : emptyProfile),
+    () =>
+      isOwnProfile && userInfo
+        ? applyCompanyLandlineToProfile(hydrateCachedProfile(userInfo))
+        : emptyProfile,
     [isOwnProfile, userInfo],
   );
   const hasCachedOwnProfile = isOwnProfile && Boolean(userInfo?.token);
@@ -149,18 +165,21 @@ const MyProfile = () => {
           ? `/api/auth/users/${userId}`
           : '/api/auth/profile';
         const { data } = await api.get(endpoint, config);
+        const normalizedData = applyCompanyLandlineToProfile(data);
 
         if (isOwnProfile) {
-          setStoredUser(data);
+          setStoredUser(normalizedData);
         }
 
-        setProfile(data);
-        setFormData((currentValue) => (hasLocalChangesRef.current ? currentValue : data));
+        setProfile(normalizedData);
+        setFormData((currentValue) =>
+          hasLocalChangesRef.current ? currentValue : normalizedData,
+        );
         setIsEditing((currentValue) =>
           hasLocalChangesRef.current
             ? currentValue
             : isOwnProfile
-              ? !data.profileCompleted
+              ? !normalizedData.profileCompleted
               : false,
         );
         setError('');
@@ -202,10 +221,18 @@ const MyProfile = () => {
     hasLocalChangesRef.current = true;
     setError('');
     setSuccess('');
-    setFormData((currentValue) => ({
-      ...currentValue,
-      [field]: nextValue,
-    }));
+    setFormData((currentValue) => {
+      const nextFormData = {
+        ...currentValue,
+        [field]: nextValue,
+      };
+
+      if (field === 'company') {
+        nextFormData.phoneNumber = getCompanyLandlineNumber(nextValue);
+      }
+
+      return nextFormData;
+    });
   };
 
   const handleImageChange = (event) => {
@@ -299,18 +326,20 @@ const MyProfile = () => {
       setIsSaving(true);
       const { data } = await api.put(endpoint, formData, config);
 
+      const normalizedData = applyCompanyLandlineToProfile(data);
+
       if (isOwnProfile) {
-        setStoredUser(data);
+        setStoredUser(normalizedData);
       }
 
-      setProfile(data);
-      setFormData(data);
+      setProfile(normalizedData);
+      setFormData(normalizedData);
       setIsEditing(false);
       hasLocalChangesRef.current = false;
       setSuccess(
         isViewingManagedProfile
           ? 'Employee details saved successfully.'
-          : data.profileCompleted
+          : normalizedData.profileCompleted
             ? 'Your profile has been saved successfully.'
             : 'Please complete all required fields before saving.',
       );
@@ -359,7 +388,6 @@ const MyProfile = () => {
   const fieldDisabled = isSaving || !isEditing;
 
   const renderTextField = ({
-    key,
     label,
     field,
     type = 'text',
@@ -368,9 +396,10 @@ const MyProfile = () => {
     pattern,
     maxLength,
     disabled = fieldDisabled,
+    readOnly = false,
     className = '',
   }) => (
-    <div key={key} className={className}>
+    <div className={className}>
       <label className="text-sm font-semibold text-black">{label}</label>
       <input
         type={type}
@@ -381,6 +410,7 @@ const MyProfile = () => {
         inputMode={inputMode}
         pattern={pattern}
         maxLength={maxLength}
+        readOnly={readOnly}
         disabled={disabled}
       />
     </div>
@@ -390,7 +420,7 @@ const MyProfile = () => {
     message ? <p className="mt-2 text-xs text-black">{message}</p> : null;
 
   const renderCompanyField = () => (
-    <div key="company">
+    <div>
       <label className="text-sm font-semibold text-black">Company</label>
       <select
         value={formData.company || ''}
@@ -410,7 +440,7 @@ const MyProfile = () => {
     </div>
   );
 
-  const FormFields = () => (
+  const renderFormFields = () => (
     <div className="mt-5 grid gap-4 md:grid-cols-2">
       <div>
         <label className="text-sm font-semibold text-black">Employee number</label>
@@ -418,67 +448,37 @@ const MyProfile = () => {
       </div>
 
       {renderTextField({
-        key: 'fullName',
         label: 'Full name',
         field: 'fullName',
         placeholder: 'First name and last name',
       })}
 
       {renderTextField({
-        key: 'jobRole',
         label: 'Role',
         field: 'jobRole',
       })}
 
       {renderTextField({
-        key: 'department',
         label: 'Department',
         field: 'department',
       })}
 
       <div>
         {renderTextField({
-          key: 'phoneNumber',
-          label: 'Phone number',
+          label: 'Landline number',
           field: 'phoneNumber',
           type: 'tel',
           inputMode: 'numeric',
           pattern: '\\d{10}',
           maxLength: PHONE_NUMBER_LENGTH,
-          placeholder: '0712345678',
-          className: '',
+          placeholder: '0112697151',
+          readOnly: true,
         })}
         {renderErrorText(phoneNumberError)}
       </div>
 
       <div>
         {renderTextField({
-          key: 'mobileNumber',
-          label: 'Mobile number',
-          field: 'mobileNumber',
-          type: 'tel',
-          inputMode: 'numeric',
-          pattern: '\\d{10}',
-          maxLength: PHONE_NUMBER_LENGTH,
-          placeholder: '0771234567',
-          className: '',
-        })}
-        {renderErrorText(mobileNumberError)}
-      </div>
-
-      <div>
-        {renderTextField({
-          key: 'email',
-          label: 'Email address',
-          field: 'email',
-          type: 'email',
-        })}
-        {renderErrorText(emailError)}
-      </div>
-
-      <div>
-        {renderTextField({
-          key: 'extensionNumber',
           label: 'EXT number (optional)',
           field: 'extensionNumber',
           type: 'tel',
@@ -492,7 +492,28 @@ const MyProfile = () => {
 
       <div>
         {renderTextField({
-          key: 'whatsappNumber',
+          label: 'Email address',
+          field: 'email',
+          type: 'email',
+        })}
+        {renderErrorText(emailError)}
+      </div>
+
+      <div>
+        {renderTextField({
+          label: 'Mobile number',
+          field: 'mobileNumber',
+          type: 'tel',
+          inputMode: 'numeric',
+          pattern: '\\d{10}',
+          maxLength: PHONE_NUMBER_LENGTH,
+          placeholder: '0771234567',
+        })}
+        {renderErrorText(mobileNumberError)}
+      </div>
+
+      <div>
+        {renderTextField({
           label: 'WhatsApp number',
           field: 'whatsappNumber',
           type: 'tel',
@@ -528,8 +549,8 @@ const MyProfile = () => {
     );
   }
 
-  const ProfileCard = () => (
-    <div className="relative overflow-hidden rounded-[2rem] border border-black/6 bg-white p-5 text-black shadow-[0_24px_50px_rgba(16,16,16,0.06)] xl:p-6">
+  const renderProfileCard = () => (
+    <div className="theme-panel relative overflow-hidden rounded-[2rem] border border-black/6 bg-white p-5 text-black shadow-[0_24px_50px_rgba(16,16,16,0.06)] xl:p-6">
       <div className="absolute -right-10 top-5 h-24 w-24 rounded-full border border-black/5 bg-white/85" />
       <div className="absolute bottom-0 right-0 h-28 w-28 rounded-full bg-white/90 blur-2xl" />
 
@@ -563,7 +584,7 @@ const MyProfile = () => {
           <img
             src={profileCardLogoSrc}
             alt={profileCardLogoAlt}
-            className="mx-auto h-11 w-auto object-contain"
+            className="theme-logo-image mx-auto h-11 w-auto object-contain"
           />
           <h1 className="mt-2 text-2xl font-bold xl:text-3xl">
             {formData.fullName || profile.fullName || 'Complete your profile'}
@@ -620,9 +641,9 @@ const MyProfile = () => {
       <div className="space-y-4 pb-4 pt-1 animate-in fade-in duration-500 lg:space-y-3 lg:pb-2">
         {showSetupFlow ? (
           <section className="grid gap-4 xl:grid-cols-[20rem_minmax(0,1fr)]">
-            <ProfileCard />
+            {renderProfileCard()}
 
-            <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_26px_52px_rgba(0,0,0,0.08)] xl:p-6">
+            <div className="theme-panel rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_26px_52px_rgba(0,0,0,0.08)] xl:p-6">
               <div className="border-b border-black/10 pb-4">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-black">
                   First Login
@@ -642,7 +663,7 @@ const MyProfile = () => {
                 </div>
               )}
 
-              <FormFields />
+              {renderFormFields()}
 
               <button
                 onClick={handleSave}
@@ -656,9 +677,9 @@ const MyProfile = () => {
           </section>
         ) : (
           <section className="grid gap-4 xl:grid-cols-[20rem_minmax(0,1fr)]">
-            <ProfileCard />
+            {renderProfileCard()}
 
-            <div className="rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_26px_52px_rgba(0,0,0,0.08)] xl:p-6">
+            <div className="theme-panel rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_26px_52px_rgba(0,0,0,0.08)] xl:p-6">
               <div className="flex flex-col gap-3 border-b border-black/10 pb-4 md:flex-row md:items-center md:justify-between">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-black">
@@ -753,7 +774,7 @@ const MyProfile = () => {
                 </div>
               )}
 
-              <FormFields />
+              {renderFormFields()}
             </div>
           </section>
         )}

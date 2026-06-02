@@ -48,7 +48,7 @@ const PublicCompanyInfo = () => {
   if (!company) {
     return (
       <div className="min-h-screen bg-[linear-gradient(180deg,_#fdfaf8_0%,_#f6ece5_100%)] px-4 py-10">
-        <div className="mx-auto max-w-sm rounded-[2.2rem] border border-[var(--color-brand-red)]/10 bg-white p-7 text-center shadow-[0_24px_54px_rgba(89,10,22,0.08)]">
+        <div className="theme-panel mx-auto max-w-sm rounded-[2.2rem] border border-[var(--color-brand-red)]/10 bg-white p-7 text-center shadow-[0_24px_54px_rgba(89,10,22,0.08)]">
           <h1 className="text-2xl font-black text-black">Company not found</h1>
           <p className="mt-3 text-sm leading-6 text-black/70">
             We could not match this company to a saved public company page.
@@ -69,7 +69,7 @@ const PublicCompanyInfo = () => {
 
   return (
     <div className="min-h-[100svh] bg-[linear-gradient(180deg,_#fdfaf8_0%,_#f6ece5_100%)] px-3 py-4 md:min-h-[100dvh] md:px-4 md:py-6">
-      <section className="relative mx-auto w-full max-w-sm rounded-[2.15rem] border border-[var(--color-brand-red)]/10 bg-white px-4 pb-4 pt-3 shadow-[0_22px_44px_rgba(89,10,22,0.08)] sm:max-w-[26.25rem] sm:px-5 sm:pb-5 sm:pt-3.5">
+      <section className="theme-panel relative mx-auto w-full max-w-sm rounded-[2.15rem] border border-[var(--color-brand-red)]/10 bg-white px-4 pb-4 pt-3 shadow-[0_22px_44px_rgba(89,10,22,0.08)] sm:max-w-[26.25rem] sm:px-5 sm:pb-5 sm:pt-3.5">
         <button
           type="button"
           onClick={handleBackToCard}
@@ -85,7 +85,7 @@ const PublicCompanyInfo = () => {
             <img
               src={company.logo}
               alt={`${company.companyName} corporate logo`}
-              className="mx-auto h-[7.15rem] w-auto object-contain sm:h-[8.1rem]"
+              className="theme-logo-image mx-auto h-[7.15rem] w-auto object-contain sm:h-[8.1rem]"
               onError={() => setLogoErrorCompanyCode(company.code)}
             />
           ) : (

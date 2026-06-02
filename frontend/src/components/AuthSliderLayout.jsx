@@ -17,7 +17,7 @@ const AuthSliderLayout = ({
             <img
               src="/akbar-corporate-logo.png"
               alt="Akbar Brothers corporate logo"
-              className="h-20 w-auto object-contain sm:h-24"
+              className="theme-logo-image h-20 w-auto object-contain sm:h-24"
             />
           </div>
 

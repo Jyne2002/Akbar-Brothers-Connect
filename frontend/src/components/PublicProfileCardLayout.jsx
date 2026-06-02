@@ -24,7 +24,7 @@ const PublicProfileCardLayout = ({
   onToggleDownloadMenu,
   onDownload,
 }) => (
-  <section className="relative w-full overflow-hidden rounded-[2.45rem] border border-black/10 bg-white shadow-[0_30px_72px_rgba(0,0,0,0.11)]">
+  <section className="theme-panel relative w-full overflow-hidden rounded-[2.45rem] border border-black/10 bg-white shadow-[0_30px_72px_rgba(0,0,0,0.11)]">
     {onBack ? (
       <button
         type="button"
@@ -41,7 +41,7 @@ const PublicProfileCardLayout = ({
       <img
         src={companyLogoSrc}
         alt={companyLogoAlt}
-        className="relative z-10 translate-y-1.5 h-[5.5rem] w-auto max-w-[16rem] object-contain"
+        className="theme-logo-image relative z-10 translate-y-1.5 h-[5.5rem] w-auto max-w-[16rem] object-contain"
       />
     </div>
 
@@ -76,7 +76,7 @@ const PublicProfileCardLayout = ({
         </div>
       </div>
 
-      <div className="mt-3 rounded-[1.75rem] border border-black/10 bg-white p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+      <div className="theme-subpanel mt-3 rounded-[1.75rem] border border-black/10 bg-white p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
         <div className="space-y-2.5">
           {profileRows.map((row, index) => (
             <div

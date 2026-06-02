@@ -221,7 +221,7 @@ const getProfileUpdateValidationMessage = (normalized) => {
   }
 
   if (!isValidPhoneNumber(normalized.phoneNumber)) {
-    return 'Phone number must be exactly 10 digits';
+    return 'Landline number must be exactly 10 digits';
   }
 
   if (!isValidPhoneNumber(normalized.mobileNumber)) {

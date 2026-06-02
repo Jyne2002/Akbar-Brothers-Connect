@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { clearStoredUser, getStoredUser, subscribeToStoredUser } from '../utils/auth';
+import { getStoredTheme, subscribeToTheme, toggleTheme } from '../utils/theme';
 
 const createNavLinkClassName = (sizeClasses) => ({ isActive }) =>
   `rounded-full ${sizeClasses} font-semibold transition ${
@@ -18,13 +19,20 @@ const mobileNavLinkClassName = createNavLinkClassName(
 const Navbar = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(() => getStoredUser());
+  const [theme, setTheme] = useState(() => getStoredTheme());
 
   useEffect(() => subscribeToStoredUser(setUserInfo), []);
+  useEffect(() => subscribeToTheme(setTheme), []);
 
   const handleLogout = () => {
     clearStoredUser();
     navigate('/login');
   };
+  const handleThemeToggle = () => {
+    setTheme(toggleTheme());
+  };
+  const isDarkMode = theme === 'dark';
+  const themeToggleLabel = isDarkMode ? 'Disable dark mode' : 'Enable dark mode';
 
   const displayName =
     userInfo?.fullName?.trim() || userInfo?.employeeNumber || userInfo?.email || 'Employee';
@@ -62,7 +70,7 @@ const Navbar = () => {
               <img
                 src="/akbar-corporate-logo.png"
                 alt="Akbar Brothers corporate logo"
-                className="h-10 w-auto object-contain"
+                className="theme-logo-image h-10 w-auto object-contain"
               />
             </Link>
 
@@ -84,6 +92,19 @@ const Navbar = () => {
               )}
             </div>
             <button
+              onClick={handleThemeToggle}
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white text-black transition hover:bg-[#f3f3f3]"
+              title={themeToggleLabel}
+              aria-label={themeToggleLabel}
+            >
+              <img
+                src="/moon-dark-mode.png"
+                alt=""
+                aria-hidden="true"
+                className="theme-toggle-icon h-4 w-4 object-contain"
+              />
+            </button>
+            <button
               onClick={handleLogout}
               className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-red)] text-white transition hover:bg-[var(--color-brand-red-dark)]"
               title="Logout"
@@ -104,7 +125,7 @@ const Navbar = () => {
               <img
                 src="/akbar-corporate-logo.png"
                 alt="Akbar Brothers corporate logo"
-                className="h-12 w-auto object-contain"
+                className="theme-logo-image h-12 w-auto object-contain"
               />
             </Link>
 
@@ -117,14 +138,29 @@ const Navbar = () => {
             <span className="truncate text-sm font-semibold">
               {displayName}
             </span>
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-red)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-red-dark)]"
-              title="Logout"
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleThemeToggle}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-black transition hover:bg-[#f3f3f3]"
+                title={themeToggleLabel}
+                aria-label={themeToggleLabel}
+              >
+                <img
+                  src="/moon-dark-mode.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="theme-toggle-icon h-4 w-4 object-contain"
+                />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-red)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-red-dark)]"
+                title="Logout"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </div>

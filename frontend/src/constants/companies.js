@@ -96,6 +96,24 @@ export const COMPANIES = [
 const normalizeCompanyLookupValue = (company) =>
   typeof company === 'string' ? company.trim().toLowerCase() : '';
 
+const normalizeCompanyPhoneNumber = (value) => {
+  const digits = String(value || '').replace(/[^\d]/g, '');
+
+  if (!digits) {
+    return '';
+  }
+
+  if (digits.startsWith('0094')) {
+    return `0${digits.slice(4)}`;
+  }
+
+  if (digits.startsWith('94')) {
+    return `0${digits.slice(2)}`;
+  }
+
+  return digits;
+};
+
 export const getCompanyByValue = (company) => {
   const normalizedCompany = normalizeCompanyLookupValue(company);
 
@@ -115,3 +133,13 @@ export const getCompanyByValue = (company) => {
 export const getCompanyCode = (company) => getCompanyByValue(company)?.code || '';
 
 export const getCompanyLabel = (company) => getCompanyByValue(company)?.name || company;
+
+export const getCompanyLandlineNumber = (company) => {
+  const companyRecord = getCompanyByValue(company);
+
+  if (!companyRecord) {
+    return '';
+  }
+
+  return normalizeCompanyPhoneNumber(companyRecord.phoneUrl || companyRecord.phoneDisplay);
+};
