@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
+import ThemedLogo from './ThemedLogo';
 import { clearStoredUser, getStoredUser, subscribeToStoredUser } from '../utils/auth';
 import { getStoredTheme, subscribeToTheme, toggleTheme } from '../utils/theme';
 
@@ -67,7 +68,7 @@ const Navbar = () => {
               aria-label="Akbar Brothers EMS home"
               className="flex shrink-0 items-center"
             >
-              <img
+              <ThemedLogo
                 src="/akbar-corporate-logo.png"
                 alt="Akbar Brothers corporate logo"
                 className="theme-logo-image h-10 w-auto object-contain"
@@ -122,7 +123,7 @@ const Navbar = () => {
               aria-label="Akbar Brothers EMS home"
               className="flex w-fit items-center"
             >
-              <img
+              <ThemedLogo
                 src="/akbar-corporate-logo.png"
                 alt="Akbar Brothers corporate logo"
                 className="theme-logo-image h-12 w-auto object-contain"
@@ -134,24 +135,12 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-3 rounded-full border border-black/8 bg-white/70 px-4 py-2.5 text-[var(--color-brand-ink)] shadow-sm backdrop-blur-sm lg:min-w-[19rem]">
-            <span className="truncate text-sm font-semibold">
-              {displayName}
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleThemeToggle}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white text-black transition hover:bg-[#f3f3f3]"
-                title={themeToggleLabel}
-                aria-label={themeToggleLabel}
-              >
-                <img
-                  src="/moon-dark-mode.png"
-                  alt=""
-                  aria-hidden="true"
-                  className="theme-toggle-icon h-4 w-4 object-contain"
-                />
-              </button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-3 rounded-full border border-black/8 bg-white/70 px-4 py-2.5 text-[var(--color-brand-ink)] shadow-sm backdrop-blur-sm lg:min-w-[19rem]">
+              <span className="truncate text-sm font-semibold">
+                {displayName}
+              </span>
+
               <button
                 onClick={handleLogout}
                 className="inline-flex items-center gap-2 rounded-full bg-[var(--color-brand-red)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-red-dark)]"
@@ -161,6 +150,20 @@ const Navbar = () => {
                 Logout
               </button>
             </div>
+
+            <button
+              onClick={handleThemeToggle}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/10 bg-white text-black shadow-sm transition hover:bg-[#f3f3f3]"
+              title={themeToggleLabel}
+              aria-label={themeToggleLabel}
+            >
+              <img
+                src="/moon-dark-mode.png"
+                alt=""
+                aria-hidden="true"
+                className="theme-toggle-icon h-4 w-4 object-contain"
+              />
+            </button>
           </div>
         </div>
       </div>

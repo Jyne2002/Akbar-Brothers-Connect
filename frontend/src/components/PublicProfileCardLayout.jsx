@@ -1,5 +1,6 @@
 import { ArrowLeft, Building2, Copy, Download, Mail, Phone, Share2, Smartphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ThemedLogo from './ThemedLogo';
 import { getBrandMaskedIconStyle } from '../utils/socialIcons';
 
 const PublicProfileCardLayout = ({
@@ -38,7 +39,7 @@ const PublicProfileCardLayout = ({
     ) : null}
 
     <div className="relative flex min-h-[8.4rem] items-start justify-center bg-white px-6 pb-2 pt-2.5 text-center">
-      <img
+      <ThemedLogo
         src={companyLogoSrc}
         alt={companyLogoAlt}
         className="theme-logo-image relative z-10 translate-y-1.5 h-[5.5rem] w-auto max-w-[16rem] object-contain"

@@ -833,7 +833,7 @@ const AdminPanel = () => {
                 return (
                   <div
                     key={user._id}
-                    className="rounded-[1.6rem] border border-black/10 bg-white p-5"
+                    className="rounded-[1.6rem] border border-black/10 bg-[#fafafa] p-5"
                   >
                     <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                       <div className="flex items-start gap-4">

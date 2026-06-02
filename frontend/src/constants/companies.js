@@ -37,6 +37,7 @@ export const COMPANIES = [
   {
     code: 'A',
     id: 'Company A',
+    slug: 'akbar-brothers',
     name: 'Akbar Brothers',
     description: 'Estate operations and premium tea production teams.',
     companyName: 'Akbar Brothers (Pvt) Ltd',
@@ -48,6 +49,8 @@ export const COMPANIES = [
     websiteLabel: 'www.akbargroup.lk',
     websiteUrl: 'https://www.akbargroup.lk',
     logo: '/akbar-corporate-logo.png',
+    showcaseImage: '/quick-tea-company-photo.webp',
+    showcaseImageAlt: 'Akbar Brothers product range',
     footerLogo: '/akbar-brand-logo.png',
     footerLogoAlt: 'Akbar Brothers brand logo',
     actionLinks: AKBAR_ACTION_LINKS,
@@ -56,6 +59,7 @@ export const COMPANIES = [
   {
     code: 'B',
     id: 'Company B',
+    slug: 'falcon-trading',
     name: 'Falcon Trading',
     description: 'Bakery and confectionery ingredient distribution teams across Sri Lanka.',
     companyName: 'Falcon Trading (Pvt) Ltd',
@@ -75,14 +79,15 @@ export const COMPANIES = [
   {
     code: 'C',
     id: 'Company C',
+    slug: 'quick-tea',
     name: 'Quick Tea',
     description: 'Teabag manufacturing and sustainability-focused tea operations.',
     companyName: 'Quick Tea (Pvt) Ltd',
     companyOverview: QUICK_TEA_COMPANY_OVERVIEW,
     address: SHARED_COMPANY_ADDRESS,
     emailAddress: 'contactus@akbar.com',
-    phoneDisplay: '(+94)11 2697151',
-    phoneUrl: 'tel:+94112697151',
+    phoneDisplay: '0112 933 326',
+    phoneUrl: 'tel:+94112933326',
     websiteLabel: 'www.akbargroup.lk',
     websiteUrl: 'https://www.akbargroup.lk',
     logo: '/quick-tea-logo.png',
@@ -123,7 +128,7 @@ export const getCompanyByValue = (company) => {
 
   return (
     COMPANIES.find((entry) =>
-      [entry.code, entry.id, entry.name, ...(entry.aliases || [])]
+      [entry.code, entry.id, entry.slug, entry.name, ...(entry.aliases || [])]
         .filter(Boolean)
         .some((value) => normalizeCompanyLookupValue(value) === normalizedCompany),
     ) || null
@@ -131,6 +136,8 @@ export const getCompanyByValue = (company) => {
 };
 
 export const getCompanyCode = (company) => getCompanyByValue(company)?.code || '';
+
+export const getCompanySlug = (company) => getCompanyByValue(company)?.slug || '';
 
 export const getCompanyLabel = (company) => getCompanyByValue(company)?.name || company;
 

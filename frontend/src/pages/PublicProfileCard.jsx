@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PublicProfileCardLayout from '../components/PublicProfileCardLayout';
+import ThemedLogo from '../components/ThemedLogo';
 import { getCompanyByValue } from '../constants/companies';
 import api from '../utils/api';
 import {
@@ -300,7 +301,7 @@ const PublicProfileCard = () => {
     return (
       <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(245,245,245,0.9)_0%,_rgba(255,255,255,0.98)_42%,_#f7f7f7_100%)] px-4 py-10">
         <div className="mx-auto max-w-sm rounded-[2.2rem] border border-black/10 bg-white p-7 text-center shadow-[0_24px_54px_rgba(0,0,0,0.08)]">
-          <img
+          <ThemedLogo
             src="/akbar-corporate-logo.png"
             alt="Akbar Brothers corporate logo"
             className="mx-auto h-12 w-auto object-contain"

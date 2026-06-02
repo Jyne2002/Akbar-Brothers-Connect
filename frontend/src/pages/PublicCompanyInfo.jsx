@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Building2 } from 'lucide-react';
 import CompanyActionButtons from '../components/CompanyActionButtons';
 import CompanyContactButtons from '../components/CompanyContactButtons';
+import ThemedLogo from '../components/ThemedLogo';
 import { getCompanyByValue } from '../constants/companies';
 import { buildPublicCompanyInfoUrl, buildPublicProfilePath } from '../utils/profileCard';
 
@@ -82,7 +83,7 @@ const PublicCompanyInfo = () => {
 
         <div className="flex h-[8rem] items-end justify-center overflow-hidden px-2 pt-1 sm:h-[9rem] sm:px-3 sm:pt-1">
           {showLogo ? (
-            <img
+            <ThemedLogo
               src={company.logo}
               alt={`${company.companyName} corporate logo`}
               className="theme-logo-image mx-auto h-[7.15rem] w-auto object-contain sm:h-[8.1rem]"
@@ -99,6 +100,16 @@ const PublicCompanyInfo = () => {
         <div className="mt-4 text-center">
           <p className="text-[0.93rem] leading-6 text-black/74">{company.companyOverview}</p>
         </div>
+
+        {company.showcaseImage ? (
+          <div className="mt-4 overflow-hidden rounded-[1.5rem] bg-[#f7f2e8] shadow-[0_18px_34px_rgba(89,10,22,0.08)]">
+            <img
+              src={company.showcaseImage}
+              alt={company.showcaseImageAlt || `${company.companyName} showcase`}
+              className="h-auto w-full object-cover"
+            />
+          </div>
+        ) : null}
 
         <div className="mt-4">
           <CompanyActionButtons company={company} centered />

@@ -1,15 +1,27 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Building2 } from 'lucide-react';
 import CompanyActionButtons from '../components/CompanyActionButtons';
 import CompanyContactButtons from '../components/CompanyContactButtons';
-import { getCompanyByValue } from '../constants/companies';
+import ThemedLogo from '../components/ThemedLogo';
+import { getCompanyByValue, getCompanySlug } from '../constants/companies';
 
 const CompanyInfo = () => {
   const { companyId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const company = getCompanyByValue(decodeURIComponent(companyId || ''));
   const [logoErrorCompanyCode, setLogoErrorCompanyCode] = useState('');
   const showLogo = Boolean(company?.logo) && logoErrorCompanyCode !== company?.code;
+  const canonicalCompanyPath = company ? `/company-info/${encodeURIComponent(getCompanySlug(company.code) || company.code)}` : '';
+
+  useEffect(() => {
+    if (!canonicalCompanyPath || location.pathname === canonicalCompanyPath) {
+      return;
+    }
+
+    navigate(canonicalCompanyPath, { replace: true });
+  }, [canonicalCompanyPath, location.pathname, navigate]);
 
   if (!company) {
     return (
@@ -40,7 +52,7 @@ const CompanyInfo = () => {
         <div className="grid gap-8 xl:grid-cols-[22rem_minmax(0,1fr)] xl:items-center">
           <div className="flex min-h-[20rem] items-center justify-center px-4 py-6">
             {showLogo ? (
-              <img
+              <ThemedLogo
                 src={company.logo}
                 alt={`${company.companyName} corporate logo`}
                 className="mx-auto h-56 w-auto object-contain"

@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { Building2, Camera, Loader2, Save, Share2, SquarePen } from 'lucide-react';
 import ProfileImageEditorModal from '../components/ProfileImageEditorModal';
 import ProfileSocialButtons from '../components/ProfileSocialButtons';
-import { COMPANIES, getCompanyByValue, getCompanyLandlineNumber } from '../constants/companies';
+import ThemedLogo from '../components/ThemedLogo';
+import { COMPANIES, getCompanyByValue, getCompanyLandlineNumber, getCompanySlug } from '../constants/companies';
 import api from '../utils/api';
 import { getStoredUser, hasFreshStoredUser, setStoredUser } from '../utils/auth';
 import { buildPublicProfilePath } from '../utils/profileCard';
@@ -372,6 +373,7 @@ const MyProfile = () => {
 
   const selectedCompanyValue = formData.company || profile.company || '';
   const activeCompany = getCompanyByValue(selectedCompanyValue);
+  const activeCompanySlug = getCompanySlug(selectedCompanyValue);
   const profileCardLogoSrc = activeCompany?.logo || '/akbar-corporate-logo.png';
   const profileCardLogoAlt = activeCompany?.companyName
     ? `${activeCompany.companyName} logo`
@@ -551,7 +553,6 @@ const MyProfile = () => {
 
   const renderProfileCard = () => (
     <div className="theme-panel relative overflow-hidden rounded-[2rem] border border-black/6 bg-white p-5 text-black shadow-[0_24px_50px_rgba(16,16,16,0.06)] xl:p-6">
-      <div className="absolute -right-10 top-5 h-24 w-24 rounded-full border border-black/5 bg-white/85" />
       <div className="absolute bottom-0 right-0 h-28 w-28 rounded-full bg-white/90 blur-2xl" />
 
       <div className="relative flex h-full flex-col">
@@ -581,7 +582,7 @@ const MyProfile = () => {
         </div>
 
         <div className="mt-6 text-center">
-          <img
+          <ThemedLogo
             src={profileCardLogoSrc}
             alt={profileCardLogoAlt}
             className="theme-logo-image mx-auto h-11 w-auto object-contain"
@@ -606,7 +607,7 @@ const MyProfile = () => {
           <div className="mt-auto flex flex-wrap items-center justify-center gap-3 pt-6">
             {activeCompany ? (
               <Link
-                to={`/company-info/${encodeURIComponent(activeCompany.code)}`}
+                to={`/company-info/${encodeURIComponent(activeCompanySlug || activeCompany.code)}`}
                 className={compactPrimaryButtonClassName}
               >
                 <Building2 className="h-4 w-4" />
