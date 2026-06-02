@@ -16,7 +16,6 @@ const generateToken = (id, role) =>
 const isProfileComplete = (user) =>
   Boolean(
     user.fullName?.trim() &&
-      user.department?.trim() &&
       user.jobRole?.trim() &&
       user.phoneNumber?.trim() &&
       user.mobileNumber?.trim() &&
@@ -205,7 +204,6 @@ const getProfileUpdateValidationMessage = (normalized) => {
   if (
     !normalized.email ||
     !normalized.fullName ||
-    !normalized.department ||
     !normalized.jobRole ||
     !normalized.phoneNumber ||
     !normalized.mobileNumber ||
