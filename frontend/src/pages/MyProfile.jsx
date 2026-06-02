@@ -36,6 +36,18 @@ const getExtensionNumberError = (value) =>
 const getEmailError = (value) =>
   value && !isValidEmailAddress(value) ? 'Email address must include @' : '';
 
+const getNameParts = (fullName) => {
+  const [firstName = '', ...lastNameParts] = String(fullName || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  return {
+    firstName,
+    lastName: lastNameParts.join(' '),
+  };
+};
+
 const getApiErrorMessage = (error, fallbackMessage, managedProfileFallbackMessage = '') => {
   const responseData = error?.response?.data;
 
@@ -282,6 +294,7 @@ const MyProfile = () => {
   const whatsappNumberError = getWhatsappNumberError(formData.whatsappNumber || '');
   const extensionNumberError = getExtensionNumberError(formData.extensionNumber || '');
   const emailError = getEmailError(formData.email || '');
+  const setupNameParts = getNameParts(formData.fullName || '');
 
   const handleSave = async () => {
     if (isSaving) {
@@ -291,6 +304,11 @@ const MyProfile = () => {
     try {
       setError('');
       setSuccess('');
+
+      if (showSetupFlow && (!setupNameParts.firstName || !setupNameParts.lastName)) {
+        setError('Please enter both first name and last name');
+        return;
+      }
 
       if (emailError) {
         setError(emailError);
@@ -442,18 +460,59 @@ const MyProfile = () => {
     </div>
   );
 
+  const handleSetupNameChange = (field, value) => {
+    const currentNameParts = getNameParts(formData.fullName || '');
+    const nextNameParts = {
+      ...currentNameParts,
+      [field]: value,
+    };
+
+    handleChange(
+      'fullName',
+      [nextNameParts.firstName.trim(), nextNameParts.lastName.trim()].filter(Boolean).join(' '),
+    );
+  };
+
   const renderFormFields = () => (
     <div className="mt-5 grid gap-4 md:grid-cols-2">
-      <div>
+      <div className={showSetupFlow ? 'md:col-span-2' : ''}>
         <label className="text-sm font-semibold text-black">Employee number</label>
         <input type="text" value={formData.employeeNumber} className={inputClassName} disabled />
       </div>
 
-      {renderTextField({
-        label: 'Full name',
-        field: 'fullName',
-        placeholder: 'First name and last name',
-      })}
+      {showSetupFlow ? (
+        <>
+          <div>
+            <label className="text-sm font-semibold text-black">First name</label>
+            <input
+              type="text"
+              value={setupNameParts.firstName}
+              onChange={(event) => handleSetupNameChange('firstName', event.target.value)}
+              className={inputClassName}
+              placeholder="First name"
+              disabled={fieldDisabled}
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-semibold text-black">Last name</label>
+            <input
+              type="text"
+              value={setupNameParts.lastName}
+              onChange={(event) => handleSetupNameChange('lastName', event.target.value)}
+              className={inputClassName}
+              placeholder="Last name"
+              disabled={fieldDisabled}
+            />
+          </div>
+        </>
+      ) : (
+        renderTextField({
+          label: 'Full name',
+          field: 'fullName',
+          placeholder: 'First name and last name',
+        })
+      )}
 
       {renderTextField({
         label: 'Role',
