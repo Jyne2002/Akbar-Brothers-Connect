@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Building2 } from 'lucide-react';
 import CompanyActionButtons from '../components/CompanyActionButtons';
 import CompanyContactButtons from '../components/CompanyContactButtons';
 import { getCompanyByValue } from '../constants/companies';
-import { buildPublicProfilePath } from '../utils/profileCard';
+import { buildPublicCompanyInfoUrl, buildPublicProfilePath } from '../utils/profileCard';
 
 const PublicCompanyInfo = () => {
   const { shareSlug, companyId, identitySlug } = useParams();
@@ -14,12 +14,28 @@ const PublicCompanyInfo = () => {
   const [logoErrorCompanyCode, setLogoErrorCompanyCode] = useState('');
   const showLogo = Boolean(company?.logo) && logoErrorCompanyCode !== company?.code;
   const publicProfilePath = buildPublicProfilePath(shareSlug, '', '', identitySlug);
+  const canonicalCompanyPath = buildPublicCompanyInfoUrl(
+    shareSlug,
+    company?.code || decodeURIComponent(companyId || ''),
+    '',
+    '',
+    identitySlug,
+  );
   const backTarget = publicProfilePath || '/';
   const cameFromPublicCard = location.state?.fromPublicCard === true;
   const publicProfileState = {
     fromApp: location.state?.fromApp === true,
     entryReferrer: location.state?.entryReferrer || '',
   };
+
+  useEffect(() => {
+    if (!canonicalCompanyPath || location.pathname === canonicalCompanyPath) {
+      return;
+    }
+
+    navigate(canonicalCompanyPath, { replace: true, state: location.state });
+  }, [canonicalCompanyPath, location.pathname, location.state, navigate]);
+
   const handleBackToCard = () => {
     if (cameFromPublicCard) {
       navigate(-1);

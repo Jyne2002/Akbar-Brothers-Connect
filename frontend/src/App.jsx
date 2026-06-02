@@ -19,9 +19,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/card/:shareSlug/:identitySlug/company/:companyId" element={<PublicCompanyInfo />} />
-          <Route path="/card/:shareSlug/company/:companyId" element={<PublicCompanyInfo />} />
+          <Route path="/card/:identitySlug/company/:companyId" element={<PublicCompanyInfo />} />
           <Route path="/card/:shareSlug/:identitySlug" element={<PublicProfileCard />} />
-          <Route path="/card/:shareSlug" element={<PublicProfileCard />} />
+          <Route path="/card/:identitySlug" element={<PublicProfileCard />} />
           <Route 
             path="/" 
             element={<ProtectedRoute><MyProfile /></ProtectedRoute>} 

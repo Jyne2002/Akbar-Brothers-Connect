@@ -126,6 +126,81 @@ const isValidEmailAddress = (value) => {
   return normalizedValue.includes('@');
 };
 
+const sanitizePublicPathPart = (value) =>
+  String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const getPublicFirstNameSegment = (fullName) =>
+  sanitizePublicPathPart(String(fullName || '').trim().split(/\s+/).find(Boolean) || '');
+
+const buildPublicIdentitySegment = (fullName, employeeNumber) =>
+  [getPublicFirstNameSegment(fullName), sanitizePublicPathPart(employeeNumber)]
+    .filter(Boolean)
+    .join('-');
+
+const extractEmployeeNumberFromPublicSlug = (publicSlug) => {
+  const segments = sanitizePublicPathPart(publicSlug)
+    .split('-')
+    .filter(Boolean);
+  const employeeNumber = segments[segments.length - 1] || '';
+
+  return isValidEmployeeNumber(employeeNumber) ? employeeNumber.toUpperCase() : '';
+};
+
+const matchesPublicIdentitySlug = (publicSlug, user) => {
+  const normalizedSlug = sanitizePublicPathPart(publicSlug);
+  const canonicalSlug = buildPublicIdentitySegment(user?.fullName, user?.employeeNumber);
+
+  if (!normalizedSlug || !canonicalSlug) {
+    return false;
+  }
+
+  if (normalizedSlug === canonicalSlug) {
+    return true;
+  }
+
+  const firstNameSegment = getPublicFirstNameSegment(user?.fullName);
+  const employeeNumberSegment = sanitizePublicPathPart(user?.employeeNumber);
+
+  return Boolean(
+    firstNameSegment &&
+      employeeNumberSegment &&
+      normalizedSlug.startsWith(`${firstNameSegment}-`) &&
+      normalizedSlug.endsWith(`-${employeeNumberSegment}`),
+  );
+};
+
+const findPublicUserBySlug = async (publicSlug) => {
+  const normalizedSlug = String(publicSlug || '').trim();
+
+  if (!normalizedSlug) {
+    return null;
+  }
+
+  const directMatch = await User.findOne({ shareSlug: normalizedSlug }).lean();
+
+  if (directMatch) {
+    return directMatch;
+  }
+
+  const employeeNumber = extractEmployeeNumberFromPublicSlug(normalizedSlug);
+
+  if (!employeeNumber) {
+    return null;
+  }
+
+  const identityMatch = await User.findOne({ employeeNumber }).lean();
+
+  if (!identityMatch || !matchesPublicIdentitySlug(normalizedSlug, identityMatch)) {
+    return null;
+  }
+
+  return identityMatch;
+};
+
 const getProfileUpdateValidationMessage = (normalized) => {
   if (
     !normalized.email ||
@@ -304,14 +379,14 @@ const getManagedUserById = async (req, res) => {
 };
 
 const getPublicUserProfile = async (req, res) => {
-  const shareSlug = req.params.shareSlug?.trim();
+  const publicSlug = req.params.shareSlug?.trim();
 
   try {
-    if (!shareSlug) {
+    if (!publicSlug) {
       return res.status(400).json({ message: 'A share link is required' });
     }
 
-    const user = await User.findOne({ shareSlug }).lean();
+    const user = await findPublicUserBySlug(publicSlug);
 
     if (!user || !isProfileComplete(user)) {
       return res.status(404).json({ message: 'Profile card not found' });

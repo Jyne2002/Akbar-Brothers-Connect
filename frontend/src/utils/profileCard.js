@@ -94,8 +94,29 @@ const sanitizePublicPathPart = (value) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 
+const getPublicFirstNameSegment = (fullName) =>
+  sanitizePublicPathPart(String(fullName || '').trim().split(/\s+/).find(Boolean) || '');
+
+const normalizePublicIdentitySegment = (value) => {
+  const segments = sanitizePublicPathPart(value)
+    .split('-')
+    .filter(Boolean);
+
+  if (segments.length === 0) {
+    return '';
+  }
+
+  if (segments.length === 1) {
+    return segments[0];
+  }
+
+  return [segments[0], segments[segments.length - 1]].filter(Boolean).join('-');
+};
+
 export const buildPublicIdentitySegment = (fullName, employeeNumber) =>
-  [sanitizePublicPathPart(fullName), sanitizePublicPathPart(employeeNumber)].filter(Boolean).join('-');
+  [getPublicFirstNameSegment(fullName), sanitizePublicPathPart(employeeNumber)]
+    .filter(Boolean)
+    .join('-');
 
 export const buildPublicProfilePath = (
   shareSlug,
@@ -103,14 +124,11 @@ export const buildPublicProfilePath = (
   employeeNumber,
   identitySegment = '',
 ) => {
-  if (!shareSlug) {
-    return '';
-  }
-
   const resolvedIdentitySegment =
-    identitySegment?.trim() || buildPublicIdentitySegment(fullName, employeeNumber);
+    normalizePublicIdentitySegment(identitySegment) ||
+    buildPublicIdentitySegment(fullName, employeeNumber);
 
-  return resolvedIdentitySegment ? `/card/${shareSlug}/${resolvedIdentitySegment}` : `/card/${shareSlug}`;
+  return resolvedIdentitySegment ? `/card/${resolvedIdentitySegment}` : '';
 };
 
 export const buildPublicProfileUrl = (

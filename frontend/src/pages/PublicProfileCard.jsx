@@ -6,6 +6,7 @@ import api from '../utils/api';
 import {
   buildPublicCompanyInfoUrl,
   buildPublicIdentitySegment,
+  buildPublicProfilePath,
   buildPublicProfileUrl,
   downloadProfileAsJpg,
   downloadProfileAsPdf,
@@ -19,6 +20,7 @@ const PublicProfileCard = () => {
   const { shareSlug, identitySlug } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const publicLookupKey = shareSlug || identitySlug || '';
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -43,7 +45,13 @@ const PublicProfileCard = () => {
       try {
         setLoading(true);
         setError('');
-        const { data } = await api.get(`/api/auth/public-profile/${shareSlug}`);
+
+        if (!publicLookupKey) {
+          setError('We could not load this visiting card.');
+          return;
+        }
+
+        const { data } = await api.get(`/api/auth/public-profile/${publicLookupKey}`);
         setProfile(data);
       } catch (fetchError) {
         setError(fetchError.response?.data?.message || 'We could not load this visiting card.');
@@ -53,12 +61,16 @@ const PublicProfileCard = () => {
     };
 
     fetchProfile();
-  }, [shareSlug]);
+  }, [publicLookupKey]);
 
   const company = useMemo(() => getCompanyByValue(profile?.company || ''), [profile?.company]);
   const canonicalIdentitySlug = useMemo(
     () => buildPublicIdentitySegment(profile?.fullName, profile?.employeeNumber),
     [profile?.employeeNumber, profile?.fullName],
+  );
+  const canonicalProfilePath = useMemo(
+    () => buildPublicProfilePath(profile?.shareSlug, profile?.fullName, profile?.employeeNumber),
+    [profile?.employeeNumber, profile?.fullName, profile?.shareSlug],
   );
   const openedFromApp = location.state?.fromApp === true;
   const entryReferrer = useMemo(
@@ -80,6 +92,14 @@ const PublicProfileCard = () => {
   const companyLogoAlt = company?.companyName
     ? `${company.companyName} corporate logo`
     : 'Akbar Brothers corporate logo';
+
+  useEffect(() => {
+    if (!canonicalProfilePath || location.pathname === canonicalProfilePath) {
+      return;
+    }
+
+    navigate(canonicalProfilePath, { replace: true, state: location.state });
+  }, [canonicalProfilePath, location.pathname, location.state, navigate]);
 
   const socialLinks = useMemo(
     () =>
