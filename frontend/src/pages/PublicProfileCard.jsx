@@ -330,8 +330,8 @@ const PublicProfileCard = () => {
           downloadMenuOpen={downloadMenuOpen}
           downloading={downloading}
           notice={notice}
-          backButtonLabel={openedFromApp ? 'Go to homepage' : 'Leave public card'}
-          onBack={handleBackHome}
+          backButtonLabel="Go to homepage"
+          onBack={openedFromApp ? handleBackHome : undefined}
           onShare={handleShare}
           onCopy={handleCopyLink}
           onCopyField={handleCopyField}
