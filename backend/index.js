@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 const connectDB = require('./config/database');
 const User = require('./models/User');
@@ -14,14 +15,16 @@ app.use(express.json({ limit: '10mb' }));
 
 const PORT = process.env.PORT || 5000;
 
-app.get('/', (req, res) => {
-  res.send('Backend API running with MongoDB');
-});
-
 const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
+
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+app.get(/^\/(?!api(?:\/|$)).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
 
 const normalizeLegacyUsers = async () => {
   const legacyUsers = await User.find({
