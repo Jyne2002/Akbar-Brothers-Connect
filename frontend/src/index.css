@@ -18,12 +18,14 @@ body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
+  --social-icon-fill: var(--color-brand-red);
 }
 
 body.dark-mode {
   --color-cream-white: #0d1422;
   --color-earth-brown: #dbe2ea;
   --color-brand-ink: #f8fafc;
+  --social-icon-fill: #ffffff;
   --theme-dark-bg: #0d1422;
   --theme-dark-surface: #31394c;
   --theme-dark-surface-elevated: #3a4357;
