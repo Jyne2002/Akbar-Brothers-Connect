@@ -1,4 +1,4 @@
-import { getCompanyLabel } from '../constants/companies';
+import { getCompanyLabel, getCompanySlug } from '../constants/companies';
 
 const SRI_LANKA_COUNTRY_CODE = '94';
 const CARD_FONT_FAMILY = "'Segoe UI', sans-serif";
@@ -162,6 +162,8 @@ export const buildPublicCompanyInfoUrl = (
     return '';
   }
 
+  const companySlug = getCompanySlug(companyCode) || sanitizePublicPathPart(companyCode);
+
   const profilePath = buildPublicProfilePath(
     shareSlug,
     fullName,
@@ -169,7 +171,7 @@ export const buildPublicCompanyInfoUrl = (
     identitySegment,
   );
 
-  return profilePath ? `${profilePath}/company/${encodeURIComponent(companyCode)}` : '';
+  return profilePath ? `${profilePath}/company/${encodeURIComponent(companySlug)}` : '';
 };
 
 const sanitizeFileStem = (value) =>
