@@ -8,6 +8,8 @@ const QUICK_TEA_COMPANY_OVERVIEW =
   "Quick Tea (Pvt) Limited, incorporated in 1972 as a subsidiary of Akbar Brothers Limited, operates one of Sri Lanka's largest teabag manufacturing facilities with a capacity of more than 3 billion teabags per year. The company is also recognized for its sustainability leadership, including Carbon-Inset certification supported by renewable energy initiatives and greenhouse gas reduction efforts across its value chain.";
 
 const SHARED_COMPANY_ADDRESS = 'No. 334, T.B. Jayah Mawatha, Colombo 10, Sri Lanka.';
+const QUICK_TEA_COMPANY_ADDRESS =
+  'No. 119 - 119/1, Atampolawatta Mawatha, Mabole, Wattala.';
 
 const AKBAR_ACTION_LINKS = [
   {
@@ -84,7 +86,7 @@ export const COMPANIES = [
     description: 'Teabag manufacturing and sustainability-focused tea operations.',
     companyName: 'Quick Tea (Pvt) Ltd',
     companyOverview: QUICK_TEA_COMPANY_OVERVIEW,
-    address: SHARED_COMPANY_ADDRESS,
+    address: QUICK_TEA_COMPANY_ADDRESS,
     emailAddress: 'contactus@akbar.com',
     phoneDisplay: '0112 933 326',
     phoneUrl: 'tel:+94112933326',
