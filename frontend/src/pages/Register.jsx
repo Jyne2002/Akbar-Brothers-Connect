@@ -66,7 +66,7 @@ const Register = () => {
       <form onSubmit={handleRegister} className="space-y-4">
         <div>
           <label className="block text-sm font-semibold text-[var(--color-earth-brown)]">
-            Last 4 digits of your employee number
+            Employee number
           </label>
           <input
             type="text"
@@ -74,7 +74,7 @@ const Register = () => {
             onChange={(e) => setEmployeeNumber(e.target.value.replace(/\D/g, '').slice(0, 4))}
             className={inputClassName}
             autoComplete="username"
-            placeholder="Enter the last 4 digits"
+            placeholder="Last 4 digits of your employee number"
             inputMode="numeric"
             pattern="\d{4}"
             maxLength={4}
