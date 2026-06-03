@@ -36,6 +36,7 @@ const slimPrimaryButtonClassName =
   'inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-[var(--color-brand-red)] bg-[var(--color-brand-red)] px-5 text-sm font-semibold text-white transition hover:bg-[var(--color-brand-red-dark)]';
 const disabledPrimaryButtonClassName =
   'disabled:cursor-not-allowed disabled:border-[var(--color-brand-red)]/45 disabled:bg-[var(--color-brand-red)]/45 disabled:text-white/80';
+const ALL_COMPANIES_FILTER = 'ALL';
 
 const matchesUserSearch = (user, searchValue) => {
   const normalizedSearch = searchValue.trim().toLowerCase();
@@ -101,6 +102,8 @@ const buildUserInitials = (user) =>
     .join('')
     .toUpperCase();
 
+const getAdminPanelContactNumber = (user) => user?.mobileNumber || user?.phoneNumber || '';
+
 const sanitizeFileStem = (value) =>
   String(value || 'employee')
     .trim()
@@ -111,7 +114,7 @@ const sanitizeFileStem = (value) =>
 const AdminPanel = () => {
   const userInfo = getStoredUser();
   const [activeSection, setActiveSection] = useState('admins');
-  const [selectedCompany, setSelectedCompany] = useState(COMPANIES[0]?.code || 'A');
+  const [selectedCompany, setSelectedCompany] = useState(ALL_COMPANIES_FILTER);
   const [employeeSearch, setEmployeeSearch] = useState('');
   const [userSearch, setUserSearch] = useState('');
   const [users, setUsers] = useState([]);
@@ -201,7 +204,9 @@ const AdminPanel = () => {
       sortUsers(
         users.filter(
           (user) =>
-            getCompanyCode(user.company) === selectedCompany && matchesUserSearch(user, employeeSearch),
+            (selectedCompany === ALL_COMPANIES_FILTER ||
+              getCompanyCode(user.company) === selectedCompany) &&
+            matchesUserSearch(user, employeeSearch),
         ),
       ),
     [employeeSearch, selectedCompany, users],
@@ -554,7 +559,12 @@ const AdminPanel = () => {
     }
   };
 
-  const selectedCompanyLabel = getCompanyLabel(selectedCompany);
+  const selectedCompanyLabel =
+    selectedCompany === ALL_COMPANIES_FILTER ? 'all employees' : `${getCompanyLabel(selectedCompany)} employees`;
+  const selectedCompanyEmptyStateLabel =
+    selectedCompany === ALL_COMPANIES_FILTER
+      ? 'across all companies'
+      : `for ${getCompanyLabel(selectedCompany)}`;
 
   return (
     <div className="space-y-8 pb-12 pt-4 animate-in fade-in duration-500">
@@ -729,7 +739,7 @@ const AdminPanel = () => {
                           </div>
                           <div className="flex items-center gap-2">
                             <Phone className="h-4 w-4 text-black/70" />
-                            {user.phoneNumber || 'Phone not added yet'}
+                            {getAdminPanelContactNumber(user) || 'Phone not added yet'}
                           </div>
                           <div className="flex items-center gap-2">
                             <Building2 className="h-4 w-4 text-black/70" />
@@ -790,6 +800,16 @@ const AdminPanel = () => {
 
           <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => setSelectedCompany(ALL_COMPANIES_FILTER)}
+                className={`rounded-full px-4 py-2.5 text-sm font-semibold transition ${
+                  selectedCompany === ALL_COMPANIES_FILTER
+                    ? activeFilterButtonClassName
+                    : 'border border-black/10 bg-white text-black hover:bg-[#f3f3f3]'
+                }`}
+              >
+                All
+              </button>
               {COMPANIES.map((company) => (
                 <button
                   key={company.code}
@@ -811,7 +831,7 @@ const AdminPanel = () => {
                 type="text"
                 value={employeeSearch}
                 onChange={(event) => setEmployeeSearch(event.target.value)}
-                placeholder={`Search ${selectedCompanyLabel} employees`}
+                placeholder={`Search ${selectedCompanyLabel}`}
                 className="w-full rounded-full border border-black/10 bg-[#f4f4f4] py-3 pl-11 pr-4 text-sm outline-none transition focus:border-black/20 focus:ring-4 focus:ring-black/8"
               />
             </div>
@@ -824,7 +844,7 @@ const AdminPanel = () => {
               </div>
             ) : employeeRecords.length === 0 ? (
               <div className="rounded-[1.5rem] border border-dashed border-black/12 bg-[#f4f4f4] p-10 text-center text-black/65">
-                No employee records found for {selectedCompanyLabel}.
+                No employee records found {selectedCompanyEmptyStateLabel}.
               </div>
             ) : (
               employeeRecords.map((user) => {
@@ -866,7 +886,7 @@ const AdminPanel = () => {
                             </div>
                             <div className="flex items-center gap-2">
                               <Phone className="h-4 w-4 text-black/70" />
-                              {user.phoneNumber || 'Phone not added yet'}
+                              {getAdminPanelContactNumber(user) || 'Phone not added yet'}
                             </div>
                             <div className="flex items-center gap-2">
                               <Building2 className="h-4 w-4 text-black/70" />

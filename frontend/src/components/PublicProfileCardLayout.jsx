@@ -1,4 +1,4 @@
-import { ArrowLeft, Building2, Copy, Download, Mail, Phone, Share2, Smartphone } from 'lucide-react';
+import { ArrowLeft, Building2, Copy, Download, Mail, Share2, Smartphone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ThemedLogo from './ThemedLogo';
 import { getBrandMaskedIconStyle } from '../utils/socialIcons';
@@ -116,7 +116,12 @@ const PublicProfileCardLayout = ({
                 ) : row.icon === 'email' ? (
                   <Mail className="h-4.5 w-4.5" />
                 ) : (
-                  <Phone className="h-4.5 w-4.5" />
+                  <img
+                    src="/landline-phone-icon.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="theme-contact-icon theme-contact-icon--landline h-5 w-5 object-contain"
+                  />
                 )}
               </span>
               <span className="min-w-0 self-center break-words text-[0.94rem] leading-5 text-[var(--color-brand-ink)]/82">
