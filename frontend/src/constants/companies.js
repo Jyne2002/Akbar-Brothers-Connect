@@ -2,7 +2,7 @@ const AKBAR_COMPANY_OVERVIEW =
   "Akbar Brothers (Pvt) Ltd is Sri Lanka's Largest Tea Exporter and one of the country's most respected diversified conglomerates. Established in 1969, the family-owned enterprise has grown from a tea trading business into a global organisation with interests spanning sustainable power generation, healthcare, packaging, property development, environmental services and international trade.";
 
 const FALCON_COMPANY_OVERVIEW =
-  "Falcon Trading (Pvt) Ltd is a leading Sri Lankan distributor serving the bakery and confectionery industry with an island-wide supply network. The company imports and distributes premium margarine, shortening, palm olein, yeast, bread improvers, flavours, colours, cocoa powder, canned fish, and other trusted ingredients sourced from globally recognized manufacturers and local partners.";
+  'Falcon Trading (Pvt) Ltd represents leading Bakery and Confectionery Manufacturing brands across the globe and has successfully been key market leader in the local industry. With a distribution network strategically located island wide, we have become the leading distributor of bakery and confectionary ingredients in Sri Lanka.';
 
 const QUICK_TEA_COMPANY_OVERVIEW =
   "Quick Tea (Pvt) Limited, incorporated in 1972 as a subsidiary of Akbar Brothers Limited, operates one of Sri Lanka's largest teabag manufacturing facilities with a capacity of more than 3 billion teabags per year. The company is also recognized for its sustainability leadership, including Carbon-Inset certification supported by renewable energy initiatives and greenhouse gas reduction efforts across its value chain.";
