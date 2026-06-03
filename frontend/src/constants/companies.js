@@ -91,6 +91,8 @@ export const COMPANIES = [
     websiteLabel: 'www.akbargroup.lk',
     websiteUrl: 'https://www.akbargroup.lk',
     logo: '/quick-tea-logo.png',
+    showcaseImage: '/quick-tea-company-photo.webp',
+    showcaseImageAlt: 'Tea product range',
     footerLogo: '/akbar-brand-logo.png',
     footerLogoAlt: 'Akbar Brothers brand logo',
     actionLinks: AKBAR_ACTION_LINKS,

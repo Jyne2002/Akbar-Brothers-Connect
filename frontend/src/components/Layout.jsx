@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
         {children}
       </main>
       {showChrome && (
-        <footer className="mt-auto bg-[linear-gradient(135deg,_rgba(135,12,28,0.95)_0%,_rgba(107,10,22,0.92)_100%)] text-white text-center px-4 py-3 backdrop-blur-sm">
+        <footer className="site-footer mt-auto text-white text-center px-4 py-3 backdrop-blur-sm">
           <p className="text-sm opacity-80">&copy; {new Date().getFullYear()} Akbar Brothers Employee Management System</p>
         </footer>
       )}
