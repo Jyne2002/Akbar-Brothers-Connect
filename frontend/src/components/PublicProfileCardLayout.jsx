@@ -18,7 +18,9 @@ const PublicProfileCardLayout = ({
   downloading = false,
   notice = '',
   onBack,
+  onToggleTheme,
   backButtonLabel = 'Go back',
+  themeToggleLabel = 'Toggle dark mode',
   onShare,
   onCopy,
   onCopyField,
@@ -35,6 +37,23 @@ const PublicProfileCardLayout = ({
         className="absolute left-4 top-4 z-20 inline-flex h-8 w-8 items-center justify-center text-black transition hover:-translate-x-0.5"
       >
         <ArrowLeft className="h-5 w-5" />
+      </button>
+    ) : null}
+
+    {onToggleTheme ? (
+      <button
+        type="button"
+        onClick={onToggleTheme}
+        aria-label={themeToggleLabel}
+        title={themeToggleLabel}
+        className="absolute right-4 top-4 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white text-black shadow-sm transition hover:-translate-y-0.5 hover:bg-[#f3f3f3]"
+      >
+        <img
+          src="/moon-dark-mode.png"
+          alt=""
+          aria-hidden="true"
+          className="theme-toggle-icon h-3.5 w-3.5 object-contain"
+        />
       </button>
     ) : null}
 

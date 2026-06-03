@@ -4,6 +4,7 @@ import PublicProfileCardLayout from '../components/PublicProfileCardLayout';
 import ThemedLogo from '../components/ThemedLogo';
 import { getCompanyByValue } from '../constants/companies';
 import api from '../utils/api';
+import { getStoredTheme, subscribeToTheme, toggleTheme } from '../utils/theme';
 import {
   buildPublicCompanyInfoUrl,
   buildPublicIdentitySegment,
@@ -28,6 +29,7 @@ const PublicProfileCard = () => {
   const [notice, setNotice] = useState('');
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [theme, setTheme] = useState(() => getStoredTheme());
 
   useEffect(() => {
     if (!notice) {
@@ -64,6 +66,8 @@ const PublicProfileCard = () => {
     fetchProfile();
   }, [publicLookupKey]);
 
+  useEffect(() => subscribeToTheme(setTheme), []);
+
   const company = useMemo(() => getCompanyByValue(profile?.company || ''), [profile?.company]);
   const canonicalIdentitySlug = useMemo(
     () => buildPublicIdentitySegment(profile?.fullName, profile?.employeeNumber),
@@ -93,6 +97,8 @@ const PublicProfileCard = () => {
   const companyLogoAlt = company?.companyName
     ? `${company.companyName} corporate logo`
     : 'Akbar Brothers corporate logo';
+  const themeToggleLabel =
+    theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
 
   useEffect(() => {
     if (!canonicalProfilePath || location.pathname === canonicalProfilePath) {
@@ -333,6 +339,8 @@ const PublicProfileCard = () => {
           notice={notice}
           backButtonLabel="Go to homepage"
           onBack={openedFromApp ? handleBackHome : undefined}
+          onToggleTheme={toggleTheme}
+          themeToggleLabel={themeToggleLabel}
           onShare={handleShare}
           onCopy={handleCopyLink}
           onCopyField={handleCopyField}
