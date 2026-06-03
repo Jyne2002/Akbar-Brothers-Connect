@@ -98,7 +98,16 @@ const PublicCompanyInfo = () => {
         </div>
 
         <div className="mt-4 text-center">
+          {company.publicCardHeadline ? (
+            <h2 className="text-[1.45rem] font-semibold leading-tight text-[var(--color-brand-ink)]">
+              {company.publicCardHeadline}
+            </h2>
+          ) : null}
           <p className="text-[0.93rem] leading-6 text-black/74">{company.companyOverview}</p>
+        </div>
+
+        <div className="mt-4">
+          <CompanyActionButtons company={company} centered />
         </div>
 
         {company.showcaseImage ? (
@@ -111,9 +120,15 @@ const PublicCompanyInfo = () => {
           </div>
         ) : null}
 
-        <div className="mt-4">
-          <CompanyActionButtons company={company} centered />
-        </div>
+        {company.certificationsImage ? (
+          <div className="mt-4 overflow-hidden rounded-[1.5rem] bg-white px-3 py-3 shadow-[0_18px_34px_rgba(89,10,22,0.08)]">
+            <img
+              src={company.certificationsImage}
+              alt={company.certificationsImageAlt || `${company.companyName} certifications`}
+              className="h-auto w-full object-contain"
+            />
+          </div>
+        ) : null}
 
         {(company.footerLogo || company.address || company.websiteUrl || company.emailAddress || company.phoneUrl) ? (
           <div className="-mb-4 -mx-4 mt-5 rounded-b-[2.15rem] bg-[var(--color-brand-red)] px-5 py-5 text-center text-white sm:-mb-5 sm:-mx-5">

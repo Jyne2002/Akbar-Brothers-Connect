@@ -26,7 +26,12 @@ const PublicProfileCardLayout = ({
   onCopyField,
   onToggleDownloadMenu,
   onDownload,
-}) => (
+}) => {
+  const logoClassName = companyLogoSrc?.includes('quick-tea-logo')
+    ? 'theme-logo-image relative z-10 translate-y-1.5 h-[4.7rem] w-auto max-w-[13rem] object-contain'
+    : 'theme-logo-image relative z-10 translate-y-1.5 h-[5.5rem] w-auto max-w-[16rem] object-contain';
+
+  return (
   <section className="theme-panel relative w-full overflow-hidden rounded-[2.45rem] border border-black/10 bg-white shadow-[0_30px_72px_rgba(0,0,0,0.11)]">
     {onBack ? (
       <button
@@ -61,7 +66,7 @@ const PublicProfileCardLayout = ({
       <ThemedLogo
         src={companyLogoSrc}
         alt={companyLogoAlt}
-        className="theme-logo-image relative z-10 translate-y-1.5 h-[5.5rem] w-auto max-w-[16rem] object-contain"
+        className={logoClassName}
       />
     </div>
 
@@ -248,6 +253,7 @@ const PublicProfileCardLayout = ({
       )}
     </div>
   </section>
-);
+  );
+};
 
 export default PublicProfileCardLayout;
